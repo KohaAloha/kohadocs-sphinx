@@ -1,0 +1,339 @@
+Debian
+======
+
+Debian packages of Koha
+-----------------------
+
+There is an APT package repository for Debian packages of Koha, and
+those of its dependencies that are missing from Debian. The Debian
+squeeze release is supported; older versions of Debian are not
+supported.
+
+At the moment, the 'koha-common' package is preferred to the 'koha'
+package.
+
+Versions
+~~~~~~~~
+
+There are three versions of Koha packaged. The stable 3.8 release, the
+old stable 3.6 release, and the development version taken from Git.
+
+If you're unsure what you want, go for the stable version. If you want
+to be a bit more conservative, go for the old stable version.
+
+Note that both of these are still very much a work in progress: they
+won't work perfectly just yet. Help with testing and development is
+appreciated!
+
+To use
+~~~~~~
+
+At this stage, the package usage of the three versions is pretty much
+identical. There is only difference is where you choose which one you
+want.
+
+There is also a `handy
+walkthrough <http://wiki.koha-community.org/w/index.php?title=Setting_Up_Koha_in_Virtual_Environment_%2B_Using_That_as_a_Development_Environment%23Step:_Install_Koha>`_
+on installing and configuring the packages.
+
+Stable Version
+^^^^^^^^^^^^^^
+
+To get the stable 3.8 release, add this to a
+/etc/apt/sources.list.d/koha.list file:
+
+::
+
+       deb http://debian.koha-community.org/koha squeeze main
+
+Old Stable Version
+^^^^^^^^^^^^^^^^^^
+
+To get the old stable 3.6 release, add this to a
+/etc/apt/sources.list.d/koha.list file:
+
+::
+
+       deb http://debian.koha-community.org/koha oldstable main
+
+Development Version
+^^^^^^^^^^^^^^^^^^^
+
+To get the development release (currently from 3.9), add this to your
+/etc/apt/sources.list.d/koha.list file:
+
+::
+
+       deb http://debian.koha-community.org/koha squeeze-dev main
+
+Everyone
+^^^^^^^^
+
+Add the key in gpg.asc to your APT trusted keys:
+
+::
+
+       wget -O- http://debian.koha-community.org/koha/gpg.asc | sudo apt-key add -
+
+(If you are familiar with GnuPG, you will want to verify that you have a
+trust path to the key. If you do not know how to do that, this space is
+unfortunately too limited to explain how and you will have to take your
+chances.)
+
+After that, you should be able to install Koha:
+
+::
+
+       apt-get update
+       apt-get install koha-common (!! see below !!)
+       less /usr/share/doc/koha-common/README.Debian  (!! or less /usr/share/doc/koha/README.Debian !!)
+
+Read the README.Debian file for instructions on how to configure Koha
+after the package is installed.
+
+**Wait!** There are actually two packages here: ``koha`` and
+``koha-common``.
+
+-  ``koha-common`` contains all the code and support scripts. It won't
+   give you a koha instance that is up and running on installation, but
+   it does allow you to use ``koha-create`` and associated tools to
+   create as many instances as you want. Anything created with this
+   command will automatically be managed by cron jobs, and zebra will
+   work, and so forth.
+-  ``koha`` is similar, but provides a single site. At the moment
+   however, this site can't be managed by the tools that come with the
+   package, and so you will need to set up the cron jobs and zebra for
+   it yourself. See `bug
+   5071 <http://bugs.koha-community.org/bugzilla3/show_bug.cgi?id=5071>`_
+   for plans to fix this. *It is not recommend that you use this package
+   yet.*
+
+Quick Start
+~~~~~~~~~~~
+
+Initial Configuration
+^^^^^^^^^^^^^^^^^^^^^
+
+This assumes that you are using the koha-common package.
+
+To configure your server for use with DNS names: After install, edit
+``/etc/koha/koha-sites.conf`` with details about your site. You may need
+to create this file. Some example content would be:
+
+::
+
+    DOMAIN=".mydomain.co.nz"  # Any library instance will be a subdomain of this string.
+    INTRAPORT="80"  # TCP listening port for the administration interface
+    INTRAPREFIX=""  # For administration interface URL: Prefix to be added to the instance name.
+    INTRASUFFIX="-intra"  # For administration interface URL: Suffix to be added to the instance name.
+    DEFAULTSQL="/usr/share/koha/defaults.sql.gz"  # only needed if you're pre-populating from another Koha database
+    OPACPORT="80"  # TCP listening port for the users' interface (if you skip this, the apache default of 80 will be used)
+    OPACPREFIX=""  # For users' interface URL: Prefix to be added to the instance name.
+    OPACSUFFIX=""  # For users' interface URL: Suffix to be added to the instance name.
+    ZEBRA_MARC_FORMAT="marc21"  # Specifies format of MARC records to be indexed by Zebra. Possible values are 'marc21', 'normarc' and 'unimarc'
+    ZEBRA_LANGUAGE="en"  # Primary language for Zebra indexing. Possible values are 'en', 'fr' and 'nb'
+
+Next, you will need to enable the Apache mod\_rewrite module:
+
+::
+
+    sudo a2enmod rewrite
+
+If you are planning to run MySQL on the same server as you are running
+Koha on, then make sure you install it:
+
+::
+
+    sudo apt-get install mysql-server
+
+If you're planning to run MySQL on a separate server, please do not run
+``koha-create --create-db ``\ *``instancename``* as mentioned below.
+Instead, see `Install Koha 3.6 on Debian squeeze using a separate MySQL
+server <http://wiki.koha-community.org/w/index.php?title=Install_Koha_3.6_on_Debian_squeeze_using_a_separate_MySQL_server>`_.
+
+Creating the Koha Instance
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Now you need to create your first koha instance. Replace *instancename*
+with the name of your library. If you want to have
+``library.example.com``, then *instancename* can probably be "library".
+
+::
+
+    sudo koha-create --create-db instancename
+
+Now you can visit your admininstration website to continue with the Koha
+web installer.
+
+The username to log in with will be ``koha_``\ *``instancename``* and
+the password will be near the end of
+``/etc/koha/sites/``\ *``instancename``*\ ``/koha-conf.xml``. You will
+need to be root to view this You could also use this command:
+
+::
+
+    sudo xmlstarlet sel -t -v 'yazgfs/config/pass' /etc/koha/sites/instancename/koha-conf.xml
+
+to print it out.
+
+Building Languages
+^^^^^^^^^^^^^^^^^^
+
+Commands to build a language for interface (example for france french):
+
+::
+
+    /usr/share/koha/misc/translator
+    sudo env PERL5LIB=/usr/share/koha/lib/ KOHA_CONF=/etc/koha/sites/instancename/koha-conf.xml perl translate install fr-FR
+
+Commands to build all available languages for interface:
+
+::
+
+    /usr/share/koha/misc/translator
+    Langs="$(ls -1 /usr/share/koha/misc/translator/po/ | grep -ie "pref.po" | sed -e "s/-pref\.po//g")"
+    for Current in $Langs ; do sudo env PERL5LIB=/usr/share/koha/lib/ KOHA_CONF=/etc/koha/sites/instancename/koha-conf.xml perl translate install $Current ; done
+
+--------------
+
+koha-common installs a number of handy commands, which are still
+somewhat underdocumented. Here is an overview of these:
+
+-  koha-create: create a new library instance. For example
+   ``koha-create --create-db mylibrary`` will create a new koha
+   catalogue called 'mylibrary', create and populate the database for
+   it, set up zebra, and configure Apache appropriately. Note that by
+   default after creation, your Koha instance may be disabled. If you
+   get "command not found", try /usr/sbin/koha-create (It's possible
+   that that isn't on your $PATH).
+
+   -  There are a number of `options to
+      ``koha-create`` <http://wiki.koha-community.org/w/index.php?title=Commands_provided_by_the_Debian_packages%23koha-create>`_
+      that allow you do to things such as set your MARC flavour and
+      language for zebra.
+
+-  koha-enable/koha-disable: this lets you enable or disable a Koha
+   instance, e.g. ``koha-enable``.
+-  koha-email-enable/koha-disable-email: turn on or off sending of email
+   for the Koha instance. If email is disabled, the mail queue is
+   regularly cleared in order to prevent a wave of emails when its
+   turned on. Note: by default, a new Koha instance has the mail
+   disabled.
+-  koha-remove: deletes a Koha instance
+
+See also: `Commands provided by the Debian
+packages <http://wiki.koha-community.org/w/index.php?title=Commands_provided_by_the_Debian_packages>`_.
+
+Other packages
+~~~~~~~~~~~~~~
+
+This repository may also contain other packages that Koha needs, but
+which are missing from Debian squeeze. The list of packages will vary
+over time, as new packages are needed and before they get uploaded to
+Debian. After they are in Debian squeeze, they get removed from this
+repository.
+
+On Debian you may need to install sudo, i.e. ``apt-get install sudo``.
+
+When installing on Ubuntu Lucid, you will need to manually install these
+files first:
+
+::
+
+       libhttp-oai-perl_3.23-1_all.deb
+       liblocale-currency-format-perl_1.28-1_all.deb
+       libmemoize-memcached-perl_0.03-1_all.deb
+       libpdf-api2-perl_0.73-1_all.deb
+       libpdf-api2-simple-perl_1.1.4u-1_all.deb
+       libtext-csv-perl_1.21-1_all.deb
+       libtext-csv-encoded-perl_0.10-1_all.deb
+
+There are some instructions for installing Koha on Ubuntu Lucid using
+this repository in
+`Koha\_on\_Lucid\_using\_Koha\_packages <http://wiki.koha-community.org/w/index.php?title=Koha_on_Lucid_using_Koha_packages>`_
+
+Update policy
+~~~~~~~~~~~~~
+
+There is a need for packages of both the stable Koha release and the tip
+of the git master branch. One is useful for running Koha in a production
+environment, the other is useful for testing and developing Koha, and
+for preparing for upgrades.
+
+This creates a risk that all the configuration management will become
+overwhelming. There is a strong need to keep things simple.
+
+For simplicity, only Debian squeeze will be targeted for now. Also, for
+now, all packages are built and uploaded by Robin Sheat
+(robin@catalyst.net.nz), until there is a need to set up an actual
+upload queue.
+
+There is one repository. It has two pockets (for now):
+
+-  squeeze: for packages intended for production use
+-  squeeze-dev: for things that are still undergoing development
+
+Both Koha packages and dependencies go into the same pockets.
+
+The Koha packages in the squeeze pocket are built from the 3.4.\ *n*
+tag, and the packages in squeeze-dev are build from master.
+
+Making changes to the Debian packaging
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To make changes to the Koha Debian packaging in the Koha master branch,
+changes will happen as they would for any other part of Koha: submit it
+as a patch, and hope that the release manager accepts it. When it is
+accepted, Robin will will actually build and upload the packages.
+
+For simplicity, it is important to not break the symmetry between the
+Koha master branch and the packages uploaded to
+debian.koha-community.org.
+
+Supporting more Debian releases
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+It is possible, but quite a bit of effort, to support Debian lenny. The
+problem is that there is a lot of software Koha needs that are not
+packaged for lenny, so they would have to be backported and added to the
+Koha apt repository. If someone is willing to do the backporting and
+taking responsibility of keeping them updated, Robin is willing to
+arrange them to get included in the repository.
+
+For Debian releases other than squeeze, we will need to add more
+pockets. Every package will need to be built for each release
+separately, but that can be automated, at least mostly. There might be a
+need to do parts of the packaging differently on each release, and this
+will be a bit of a nightmare. It Robin's sincere hope we do not need to
+worry about this for a while, and that we can solve the problem when we
+get it, and not now.
+
+Building Your Own Packages
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you want to build your own packages for internal use, the process
+used for building the these can be adapted. You can find it
+`here <http://wiki.koha-community.org/w/index.php?title=Building_Debian_Packages>`_.
+
+Issues of note
+~~~~~~~~~~~~~~
+
+a freshly updated debian - Lenny to Squeeze - might sometimes have
+trouble with the debian-sys-maint mysql user. You can fix it by
+`following the
+instructions <http://mirzmaster.wordpress.com/2009/01/16/mysql-access-denied-for-user-debian-sys-maintlocalhost/>`_
+
+See also
+~~~~~~~~
+
+-  `Newbie
+   guide <http://wiki.koha-community.org/w/index.php?title=Newbie_guide>`_
+   (to begin the working configuration)
+
+#. `Category:Documentation <Category:Documentation>`_
+#. `Category:Installation <Category:Installation>`_
+#. `Category:Debian\_Packages <Category:Debian_Packages>`_
+#. `Category:Installation\_alternatives <Category:Installation_alternatives>`_
+#. `Category:3.6 <Category:3.6>`_
+#. `Category:3.8 <Category:3.8>`_
+

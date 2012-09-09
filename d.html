@@ -1,0 +1,484 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Debian &mdash; KohaDocs 1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/bootstrap.js"></script>
+    <link rel="top" title="KohaDocs 1 documentation" href="index.html" />
+<script type="text/javascript">
+(function () {
+  /**
+   * Patch TOC list.
+   *
+   * Will mutate the underlying span to have a correct ul for nav.
+   *
+   * @param $span: Span containing nested UL's to mutate.
+   * @param minLevel: Starting level for nested lists. (1: global, 2: local).
+   */
+  var patchToc = function ($ul, minLevel) {
+    var findA;
+
+    // Find all a "internal" tags, traversing recursively.
+    findA = function ($elem, level) {
+      var level = level || 0,
+        $items = $elem.find("> li > a.internal, > ul, > li > ul");
+
+      // Iterate everything in order.
+      $items.each(function (index, item) {
+        var $item = $(item),
+          tag = item.tagName.toLowerCase(),
+          pad = 15 + ((level - minLevel) * 10);
+
+        if (tag === 'a' && level >= minLevel) {
+          // Add to existing padding.
+          $item.css('padding-left', pad + "px");
+          console.log(level, $item, 'padding-left', pad + "px");
+        } else if (tag === 'ul') {
+          // Recurse.
+          findA($item, level + 1);
+        }
+      });
+    };
+
+    console.log("HERE");
+    findA($ul);
+  };
+
+  $(document).ready(function () {
+    // Add styling, structure to TOC's.
+    $(".dropdown-menu").each(function () {
+      $(this).find("ul").each(function (index, item){
+        var $item = $(item);
+        $item.addClass('unstyled');
+      });
+      $(this).find("li").each(function () {
+        $(this).parent().append(this);
+      });
+    });
+
+    // Patch in level.
+    patchToc($("ul.globaltoc"), 2);
+    patchToc($("ul.localtoc"), 2);
+
+    // Enable dropdown.
+    $('.dropdown-toggle').dropdown();
+  });
+}());
+</script>
+
+  </head>
+  <body>
+  <div id="navbar" class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container-fluid">
+        <a class="brand" href="index.html">KohaDocs</a>
+        <span class="navbar-text pull-left"><b></b></span>
+          <ul class="nav">
+            <li class="divider-vertical"></li>
+            
+              <li class="dropdown">
+  <a href="index.html" class="dropdown-toggle" data-toggle="dropdown">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"><ul class="simple">
+</ul>
+</ul>
+</li>
+              <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"><ul>
+<li><a class="reference internal" href="#">Debian</a><ul>
+<li><a class="reference internal" href="#debian-packages-of-koha">Debian packages of Koha</a><ul>
+<li><a class="reference internal" href="#versions">Versions</a></li>
+<li><a class="reference internal" href="#to-use">To use</a><ul>
+<li><a class="reference internal" href="#stable-version">Stable Version</a></li>
+<li><a class="reference internal" href="#old-stable-version">Old Stable Version</a></li>
+<li><a class="reference internal" href="#development-version">Development Version</a></li>
+<li><a class="reference internal" href="#everyone">Everyone</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#quick-start">Quick Start</a><ul>
+<li><a class="reference internal" href="#initial-configuration">Initial Configuration</a></li>
+<li><a class="reference internal" href="#creating-the-koha-instance">Creating the Koha Instance</a></li>
+<li><a class="reference internal" href="#building-languages">Building Languages</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#other-packages">Other packages</a></li>
+<li><a class="reference internal" href="#update-policy">Update policy</a></li>
+<li><a class="reference internal" href="#making-changes-to-the-debian-packaging">Making changes to the Debian packaging</a></li>
+<li><a class="reference internal" href="#supporting-more-debian-releases">Supporting more Debian releases</a></li>
+<li><a class="reference internal" href="#building-your-own-packages">Building Your Own Packages</a></li>
+<li><a class="reference internal" href="#issues-of-note">Issues of note</a></li>
+<li><a class="reference internal" href="#see-also">See also</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</ul>
+  <!--<span class="localtoc"><ul>
+<li><a class="reference internal" href="#">Debian</a><ul>
+<li><a class="reference internal" href="#debian-packages-of-koha">Debian packages of Koha</a><ul>
+<li><a class="reference internal" href="#versions">Versions</a></li>
+<li><a class="reference internal" href="#to-use">To use</a><ul>
+<li><a class="reference internal" href="#stable-version">Stable Version</a></li>
+<li><a class="reference internal" href="#old-stable-version">Old Stable Version</a></li>
+<li><a class="reference internal" href="#development-version">Development Version</a></li>
+<li><a class="reference internal" href="#everyone">Everyone</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#quick-start">Quick Start</a><ul>
+<li><a class="reference internal" href="#initial-configuration">Initial Configuration</a></li>
+<li><a class="reference internal" href="#creating-the-koha-instance">Creating the Koha Instance</a></li>
+<li><a class="reference internal" href="#building-languages">Building Languages</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#other-packages">Other packages</a></li>
+<li><a class="reference internal" href="#update-policy">Update policy</a></li>
+<li><a class="reference internal" href="#making-changes-to-the-debian-packaging">Making changes to the Debian packaging</a></li>
+<li><a class="reference internal" href="#supporting-more-debian-releases">Supporting more Debian releases</a></li>
+<li><a class="reference internal" href="#building-your-own-packages">Building Your Own Packages</a></li>
+<li><a class="reference internal" href="#issues-of-note">Issues of note</a></li>
+<li><a class="reference internal" href="#see-also">See also</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</span>-->
+</li>
+            
+            
+              
+            
+            
+              
+  <li><a href="_sources/d.txt"
+         rel="nofollow">Source</a></li>
+            
+          </ul>
+          
+            
+<form class="navbar-search pull-right" style="margin-bottom:-3px;" action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<div class="container">
+   
+  <div class="section" id="debian">
+<h1>Debian<a class="headerlink" href="#debian" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="debian-packages-of-koha">
+<h2>Debian packages of Koha<a class="headerlink" href="#debian-packages-of-koha" title="Permalink to this headline">¶</a></h2>
+<p>There is an APT package repository for Debian packages of Koha, and
+those of its dependencies that are missing from Debian. The Debian
+squeeze release is supported; older versions of Debian are not
+supported.</p>
+<p>At the moment, the &#8216;koha-common&#8217; package is preferred to the &#8216;koha&#8217;
+package.</p>
+<div class="section" id="versions">
+<h3>Versions<a class="headerlink" href="#versions" title="Permalink to this headline">¶</a></h3>
+<p>There are three versions of Koha packaged. The stable 3.8 release, the
+old stable 3.6 release, and the development version taken from Git.</p>
+<p>If you&#8217;re unsure what you want, go for the stable version. If you want
+to be a bit more conservative, go for the old stable version.</p>
+<p>Note that both of these are still very much a work in progress: they
+won&#8217;t work perfectly just yet. Help with testing and development is
+appreciated!</p>
+</div>
+<div class="section" id="to-use">
+<h3>To use<a class="headerlink" href="#to-use" title="Permalink to this headline">¶</a></h3>
+<p>At this stage, the package usage of the three versions is pretty much
+identical. There is only difference is where you choose which one you
+want.</p>
+<p>There is also a <a class="reference external" href="http://wiki.koha-community.org/w/index.php?title=Setting_Up_Koha_in_Virtual_Environment_%2B_Using_That_as_a_Development_Environment%23Step:_Install_Koha">handy
+walkthrough</a>
+on installing and configuring the packages.</p>
+<div class="section" id="stable-version">
+<h4>Stable Version<a class="headerlink" href="#stable-version" title="Permalink to this headline">¶</a></h4>
+<p>To get the stable 3.8 release, add this to a
+/etc/apt/sources.list.d/koha.list file:</p>
+<div class="highlight-python"><pre>deb http://debian.koha-community.org/koha squeeze main</pre>
+</div>
+</div>
+<div class="section" id="old-stable-version">
+<h4>Old Stable Version<a class="headerlink" href="#old-stable-version" title="Permalink to this headline">¶</a></h4>
+<p>To get the old stable 3.6 release, add this to a
+/etc/apt/sources.list.d/koha.list file:</p>
+<div class="highlight-python"><pre>deb http://debian.koha-community.org/koha oldstable main</pre>
+</div>
+</div>
+<div class="section" id="development-version">
+<h4>Development Version<a class="headerlink" href="#development-version" title="Permalink to this headline">¶</a></h4>
+<p>To get the development release (currently from 3.9), add this to your
+/etc/apt/sources.list.d/koha.list file:</p>
+<div class="highlight-python"><pre>deb http://debian.koha-community.org/koha squeeze-dev main</pre>
+</div>
+</div>
+<div class="section" id="everyone">
+<h4>Everyone<a class="headerlink" href="#everyone" title="Permalink to this headline">¶</a></h4>
+<p>Add the key in gpg.asc to your APT trusted keys:</p>
+<div class="highlight-python"><pre>wget -O- http://debian.koha-community.org/koha/gpg.asc | sudo apt-key add -</pre>
+</div>
+<p>(If you are familiar with GnuPG, you will want to verify that you have a
+trust path to the key. If you do not know how to do that, this space is
+unfortunately too limited to explain how and you will have to take your
+chances.)</p>
+<p>After that, you should be able to install Koha:</p>
+<div class="highlight-python"><pre>apt-get update
+apt-get install koha-common (!! see below !!)
+less /usr/share/doc/koha-common/README.Debian  (!! or less /usr/share/doc/koha/README.Debian !!)</pre>
+</div>
+<p>Read the README.Debian file for instructions on how to configure Koha
+after the package is installed.</p>
+<p><strong>Wait!</strong> There are actually two packages here: <tt class="docutils literal"><span class="pre">koha</span></tt> and
+<tt class="docutils literal"><span class="pre">koha-common</span></tt>.</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">koha-common</span></tt> contains all the code and support scripts. It won&#8217;t
+give you a koha instance that is up and running on installation, but
+it does allow you to use <tt class="docutils literal"><span class="pre">koha-create</span></tt> and associated tools to
+create as many instances as you want. Anything created with this
+command will automatically be managed by cron jobs, and zebra will
+work, and so forth.</li>
+<li><tt class="docutils literal"><span class="pre">koha</span></tt> is similar, but provides a single site. At the moment
+however, this site can&#8217;t be managed by the tools that come with the
+package, and so you will need to set up the cron jobs and zebra for
+it yourself. See <a class="reference external" href="http://bugs.koha-community.org/bugzilla3/show_bug.cgi?id=5071">bug
+5071</a>
+for plans to fix this. <em>It is not recommend that you use this package
+yet.</em></li>
+</ul>
+</div>
+</div>
+<div class="section" id="quick-start">
+<h3>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="initial-configuration">
+<h4>Initial Configuration<a class="headerlink" href="#initial-configuration" title="Permalink to this headline">¶</a></h4>
+<p>This assumes that you are using the koha-common package.</p>
+<p>To configure your server for use with DNS names: After install, edit
+<tt class="docutils literal"><span class="pre">/etc/koha/koha-sites.conf</span></tt> with details about your site. You may need
+to create this file. Some example content would be:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">DOMAIN</span><span class="o">=</span><span class="s">&quot;.mydomain.co.nz&quot;</span>  <span class="c"># Any library instance will be a subdomain of this string.</span>
+<span class="n">INTRAPORT</span><span class="o">=</span><span class="s">&quot;80&quot;</span>  <span class="c"># TCP listening port for the administration interface</span>
+<span class="n">INTRAPREFIX</span><span class="o">=</span><span class="s">&quot;&quot;</span>  <span class="c"># For administration interface URL: Prefix to be added to the instance name.</span>
+<span class="n">INTRASUFFIX</span><span class="o">=</span><span class="s">&quot;-intra&quot;</span>  <span class="c"># For administration interface URL: Suffix to be added to the instance name.</span>
+<span class="n">DEFAULTSQL</span><span class="o">=</span><span class="s">&quot;/usr/share/koha/defaults.sql.gz&quot;</span>  <span class="c"># only needed if you&#39;re pre-populating from another Koha database</span>
+<span class="n">OPACPORT</span><span class="o">=</span><span class="s">&quot;80&quot;</span>  <span class="c"># TCP listening port for the users&#39; interface (if you skip this, the apache default of 80 will be used)</span>
+<span class="n">OPACPREFIX</span><span class="o">=</span><span class="s">&quot;&quot;</span>  <span class="c"># For users&#39; interface URL: Prefix to be added to the instance name.</span>
+<span class="n">OPACSUFFIX</span><span class="o">=</span><span class="s">&quot;&quot;</span>  <span class="c"># For users&#39; interface URL: Suffix to be added to the instance name.</span>
+<span class="n">ZEBRA_MARC_FORMAT</span><span class="o">=</span><span class="s">&quot;marc21&quot;</span>  <span class="c"># Specifies format of MARC records to be indexed by Zebra. Possible values are &#39;marc21&#39;, &#39;normarc&#39; and &#39;unimarc&#39;</span>
+<span class="n">ZEBRA_LANGUAGE</span><span class="o">=</span><span class="s">&quot;en&quot;</span>  <span class="c"># Primary language for Zebra indexing. Possible values are &#39;en&#39;, &#39;fr&#39; and &#39;nb&#39;</span>
+</pre></div>
+</div>
+<p>Next, you will need to enable the Apache mod_rewrite module:</p>
+<div class="highlight-python"><pre>sudo a2enmod rewrite</pre>
+</div>
+<p>If you are planning to run MySQL on the same server as you are running
+Koha on, then make sure you install it:</p>
+<div class="highlight-python"><pre>sudo apt-get install mysql-server</pre>
+</div>
+<p>If you&#8217;re planning to run MySQL on a separate server, please do not run
+<a href="#id1"><span class="problematic" id="id2">``</span></a>koha-create &#8211;create-db <a href="#id3"><span class="problematic" id="id4">``</span></a><em>``instancename``</em> as mentioned below.
+Instead, see <a class="reference external" href="http://wiki.koha-community.org/w/index.php?title=Install_Koha_3.6_on_Debian_squeeze_using_a_separate_MySQL_server">Install Koha 3.6 on Debian squeeze using a separate MySQL
+server</a>.</p>
+</div>
+<div class="section" id="creating-the-koha-instance">
+<h4>Creating the Koha Instance<a class="headerlink" href="#creating-the-koha-instance" title="Permalink to this headline">¶</a></h4>
+<p>Now you need to create your first koha instance. Replace <em>instancename</em>
+with the name of your library. If you want to have
+<tt class="docutils literal"><span class="pre">library.example.com</span></tt>, then <em>instancename</em> can probably be &#8220;library&#8221;.</p>
+<div class="highlight-python"><pre>sudo koha-create --create-db instancename</pre>
+</div>
+<p>Now you can visit your admininstration website to continue with the Koha
+web installer.</p>
+<p>The username to log in with will be <tt class="docutils literal"><span class="pre">koha_</span></tt><em>``instancename``</em> and
+the password will be near the end of
+<tt class="docutils literal"><span class="pre">/etc/koha/sites/</span></tt><em>``instancename``</em><tt class="docutils literal"><span class="pre">/koha-conf.xml</span></tt>. You will
+need to be root to view this You could also use this command:</p>
+<div class="highlight-python"><pre>sudo xmlstarlet sel -t -v 'yazgfs/config/pass' /etc/koha/sites/instancename/koha-conf.xml</pre>
+</div>
+<p>to print it out.</p>
+</div>
+<div class="section" id="building-languages">
+<h4>Building Languages<a class="headerlink" href="#building-languages" title="Permalink to this headline">¶</a></h4>
+<p>Commands to build a language for interface (example for france french):</p>
+<div class="highlight-python"><pre>/usr/share/koha/misc/translator
+sudo env PERL5LIB=/usr/share/koha/lib/ KOHA_CONF=/etc/koha/sites/instancename/koha-conf.xml perl translate install fr-FR</pre>
+</div>
+<p>Commands to build all available languages for interface:</p>
+<div class="highlight-python"><pre>/usr/share/koha/misc/translator
+Langs="$(ls -1 /usr/share/koha/misc/translator/po/ | grep -ie "pref.po" | sed -e "s/-pref\.po//g")"
+for Current in $Langs ; do sudo env PERL5LIB=/usr/share/koha/lib/ KOHA_CONF=/etc/koha/sites/instancename/koha-conf.xml perl translate install $Current ; done</pre>
+</div>
+<hr class="docutils" />
+<p>koha-common installs a number of handy commands, which are still
+somewhat underdocumented. Here is an overview of these:</p>
+<ul class="simple">
+<li>koha-create: create a new library instance. For example
+<tt class="docutils literal"><span class="pre">koha-create</span> <span class="pre">--create-db</span> <span class="pre">mylibrary</span></tt> will create a new koha
+catalogue called &#8216;mylibrary&#8217;, create and populate the database for
+it, set up zebra, and configure Apache appropriately. Note that by
+default after creation, your Koha instance may be disabled. If you
+get &#8220;command not found&#8221;, try /usr/sbin/koha-create (It&#8217;s possible
+that that isn&#8217;t on your $PATH).<ul>
+<li>There are a number of <cite>options to
+``koha-create`</cite> &lt;<a class="reference external" href="http://wiki.koha-community.org/w/index.php?title=Commands_provided_by_the_Debian_packages%23koha-create">http://wiki.koha-community.org/w/index.php?title=Commands_provided_by_the_Debian_packages%23koha-create</a>&gt;`_
+that allow you do to things such as set your MARC flavour and
+language for zebra.</li>
+</ul>
+</li>
+<li>koha-enable/koha-disable: this lets you enable or disable a Koha
+instance, e.g. <tt class="docutils literal"><span class="pre">koha-enable</span></tt>.</li>
+<li>koha-email-enable/koha-disable-email: turn on or off sending of email
+for the Koha instance. If email is disabled, the mail queue is
+regularly cleared in order to prevent a wave of emails when its
+turned on. Note: by default, a new Koha instance has the mail
+disabled.</li>
+<li>koha-remove: deletes a Koha instance</li>
+</ul>
+<p>See also: <a class="reference external" href="http://wiki.koha-community.org/w/index.php?title=Commands_provided_by_the_Debian_packages">Commands provided by the Debian
+packages</a>.</p>
+</div>
+</div>
+<div class="section" id="other-packages">
+<h3>Other packages<a class="headerlink" href="#other-packages" title="Permalink to this headline">¶</a></h3>
+<p>This repository may also contain other packages that Koha needs, but
+which are missing from Debian squeeze. The list of packages will vary
+over time, as new packages are needed and before they get uploaded to
+Debian. After they are in Debian squeeze, they get removed from this
+repository.</p>
+<p>On Debian you may need to install sudo, i.e. <tt class="docutils literal"><span class="pre">apt-get</span> <span class="pre">install</span> <span class="pre">sudo</span></tt>.</p>
+<p>When installing on Ubuntu Lucid, you will need to manually install these
+files first:</p>
+<div class="highlight-python"><pre>libhttp-oai-perl_3.23-1_all.deb
+liblocale-currency-format-perl_1.28-1_all.deb
+libmemoize-memcached-perl_0.03-1_all.deb
+libpdf-api2-perl_0.73-1_all.deb
+libpdf-api2-simple-perl_1.1.4u-1_all.deb
+libtext-csv-perl_1.21-1_all.deb
+libtext-csv-encoded-perl_0.10-1_all.deb</pre>
+</div>
+<p>There are some instructions for installing Koha on Ubuntu Lucid using
+this repository in
+<a class="reference external" href="http://wiki.koha-community.org/w/index.php?title=Koha_on_Lucid_using_Koha_packages">Koha_on_Lucid_using_Koha_packages</a></p>
+</div>
+<div class="section" id="update-policy">
+<h3>Update policy<a class="headerlink" href="#update-policy" title="Permalink to this headline">¶</a></h3>
+<p>There is a need for packages of both the stable Koha release and the tip
+of the git master branch. One is useful for running Koha in a production
+environment, the other is useful for testing and developing Koha, and
+for preparing for upgrades.</p>
+<p>This creates a risk that all the configuration management will become
+overwhelming. There is a strong need to keep things simple.</p>
+<p>For simplicity, only Debian squeeze will be targeted for now. Also, for
+now, all packages are built and uploaded by Robin Sheat
+(<a class="reference external" href="mailto:robin&#37;&#52;&#48;catalyst&#46;net&#46;nz">robin<span>&#64;</span>catalyst<span>&#46;</span>net<span>&#46;</span>nz</a>), until there is a need to set up an actual
+upload queue.</p>
+<p>There is one repository. It has two pockets (for now):</p>
+<ul class="simple">
+<li>squeeze: for packages intended for production use</li>
+<li>squeeze-dev: for things that are still undergoing development</li>
+</ul>
+<p>Both Koha packages and dependencies go into the same pockets.</p>
+<p>The Koha packages in the squeeze pocket are built from the 3.4.<em>n</em>
+tag, and the packages in squeeze-dev are build from master.</p>
+</div>
+<div class="section" id="making-changes-to-the-debian-packaging">
+<h3>Making changes to the Debian packaging<a class="headerlink" href="#making-changes-to-the-debian-packaging" title="Permalink to this headline">¶</a></h3>
+<p>To make changes to the Koha Debian packaging in the Koha master branch,
+changes will happen as they would for any other part of Koha: submit it
+as a patch, and hope that the release manager accepts it. When it is
+accepted, Robin will will actually build and upload the packages.</p>
+<p>For simplicity, it is important to not break the symmetry between the
+Koha master branch and the packages uploaded to
+debian.koha-community.org.</p>
+</div>
+<div class="section" id="supporting-more-debian-releases">
+<h3>Supporting more Debian releases<a class="headerlink" href="#supporting-more-debian-releases" title="Permalink to this headline">¶</a></h3>
+<p>It is possible, but quite a bit of effort, to support Debian lenny. The
+problem is that there is a lot of software Koha needs that are not
+packaged for lenny, so they would have to be backported and added to the
+Koha apt repository. If someone is willing to do the backporting and
+taking responsibility of keeping them updated, Robin is willing to
+arrange them to get included in the repository.</p>
+<p>For Debian releases other than squeeze, we will need to add more
+pockets. Every package will need to be built for each release
+separately, but that can be automated, at least mostly. There might be a
+need to do parts of the packaging differently on each release, and this
+will be a bit of a nightmare. It Robin&#8217;s sincere hope we do not need to
+worry about this for a while, and that we can solve the problem when we
+get it, and not now.</p>
+</div>
+<div class="section" id="building-your-own-packages">
+<h3>Building Your Own Packages<a class="headerlink" href="#building-your-own-packages" title="Permalink to this headline">¶</a></h3>
+<p>If you want to build your own packages for internal use, the process
+used for building the these can be adapted. You can find it
+<a class="reference external" href="http://wiki.koha-community.org/w/index.php?title=Building_Debian_Packages">here</a>.</p>
+</div>
+<div class="section" id="issues-of-note">
+<h3>Issues of note<a class="headerlink" href="#issues-of-note" title="Permalink to this headline">¶</a></h3>
+<p>a freshly updated debian - Lenny to Squeeze - might sometimes have
+trouble with the debian-sys-maint mysql user. You can fix it by
+<a class="reference external" href="http://mirzmaster.wordpress.com/2009/01/16/mysql-access-denied-for-user-debian-sys-maintlocalhost/">following the
+instructions</a></p>
+</div>
+<div class="section" id="see-also">
+<h3>See also<a class="headerlink" href="#see-also" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><a class="reference external" href="http://wiki.koha-community.org/w/index.php?title=Newbie_guide">Newbie
+guide</a>
+(to begin the working configuration)</li>
+</ul>
+<ol class="arabic simple">
+<li><a class="reference external" href="Category:Documentation">Category:Documentation</a></li>
+<li><a class="reference external" href="Category:Installation">Category:Installation</a></li>
+<li><a class="reference external" href="Category:Debian_Packages">Category:Debian_Packages</a></li>
+<li><a class="reference external" href="Category:Installation_alternatives">Category:Installation_alternatives</a></li>
+<li><a class="reference external" href="Category:3.6">Category:3.6</a></li>
+<li><a class="reference external" href="Category:3.8">Category:3.8</a></li>
+</ol>
+</div>
+</div>
+</div>
+
+
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right"><a href="#">Back to top</a></p>
+    <p>
+        &copy; Copyright 2012, e.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>
